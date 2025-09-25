@@ -1,0 +1,106 @@
+# =========================
+# EDU-CIAA / C Project
+# =========================
+
+# Prerequisites
+*.d
+
+# Object files
+*.o
+*.ko
+*.obj
+*.elf
+
+# Linker output
+*.ilk
+*.map
+*.exp
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Libraries
+*.lib
+*.a
+*.la
+*.lo
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+# Debug files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# Kernel Module Compile Results
+*.mod*
+*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
+Mkfile.old
+dkms.conf
+
+# =========================
+# IDE / Embedded IDE (Eclipse-based)
+# =========================
+.settings/
+.cproject
+.project
+.metadata/
+*.launch
+
+# Build & log folders
+out/
+build/
+.build-log/
+Debug/
+Release/
+
+# User configs
+_programs/
+scripts/user/user_preferences.cfg
+program.mk
+board.mk
+
+# =========================
+# KiCad
+# =========================
+*.bak
+*.bck
+*.kicad_prl
+*.tmp
+*~
+*.net
+*.xml
+*-backups/
+fp-info-cache
+
+# Mantener:
+#   - *.sch / *.kicad_sch (esquemáticos)
+#   - *.kicad_pcb (PCB)
+#   - *.pro / *.kicad_pro (proyecto)
+#   - *.lib / *.kicad_sym (bibliotecas)
+#   - *.pretty/ (footprints)
+
+# =========================
+# OS / Misc
+# =========================
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
