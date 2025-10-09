@@ -11,7 +11,8 @@
 #define ENB   PWM5   // Canal PWM T_COL1
 
 // --- Velocidad base ---
-#define SPEED 255  // entre 0 y 255
+#define SPEED             150   // entre 0 y 255
+#define SPEED_B_REVERSE   170   // <-- motor B más rápido al retroceder
 
 void motorA_forward(void) {
    gpioWrite(IN1, ON);
@@ -82,21 +83,21 @@ int main(void) {
       motorA_backward();
       motorB_backward();
       pwmWrite(ENA, SPEED);
-      pwmWrite(ENB, SPEED);
+      pwmWrite(ENB, SPEED_B_REVERSE);  // <-- aumento de velocidad en reversa
       delay(2000);
 
       // --- Giro derecha ---
       printf("Giro a la derecha\r\n");
-      motorA_forward();   // Motor izquierdo avanza
-      motorB_backward();  // Motor derecho retrocede
+      motorA_forward();
+      motorB_backward();
       pwmWrite(ENA, SPEED);
       pwmWrite(ENB, SPEED);
       delay(1000);
 
       // --- Giro izquierda ---
       printf("Giro a la izquierda\r\n");
-      motorA_backward();  // Motor izquierdo retrocede
-      motorB_forward();   // Motor derecho avanza
+      motorA_backward();
+      motorB_forward();
       pwmWrite(ENA, SPEED);
       pwmWrite(ENB, SPEED);
       delay(1000);
@@ -109,4 +110,3 @@ int main(void) {
 
    return 0;
 }
-
