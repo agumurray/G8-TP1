@@ -25,10 +25,10 @@ static void delayMicroseconds(uint32_t us){
 
 #define ECHO_TIMEOUT_US 30000UL // 30 ms
 
-void hc_sr04_init(void){
+void hc_sr04_init(uint8_t echo_pin, uint8_t trig_pin){
    dwtInit();
-   gpioConfig(SR04_TRIG_GPIO, GPIO_OUTPUT);
-   gpioConfig(SR04_ECHO_GPIO, GPIO_INPUT);
+   gpioConfig(trig_pin, GPIO_OUTPUT);
+   gpioConfig(echo_pin, GPIO_INPUT);
 }
 
 static uint32_t medirPulso(uint8_t pin){

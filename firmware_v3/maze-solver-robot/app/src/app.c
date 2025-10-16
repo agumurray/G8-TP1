@@ -6,7 +6,7 @@
 #include "../../drivers/inc/l298n.h"
 #include "../../drivers/inc/robot_pins.h"
 
-#define TEST_MODE  2   // 0=normal, 1=sensor, 2=motores
+#define TEST_MODE  1   // 0=normal, 1=sensor, 2=motores
 
 int main(void) {
     boardConfig();
@@ -14,9 +14,9 @@ int main(void) {
 
 #if TEST_MODE == 1
     printf("Test sensor HC-SR04\r\n");
-    hc_sr04_init();
+    hc_sr04_init(SR04_01_ECHO_GPIO, SR04_01_TRIG_GPIO);
     while(TRUE) {
-        uint32_t dist = hc_sr04_distance_cm(SR04_ECHO_GPIO, SR04_TRIG_GPIO);
+        uint32_t dist = hc_sr04_distance_cm(SR04_01_ECHO_GPIO, SR04_01_TRIG_GPIO);
         printf("Distancia: %lu cm\r\n", dist/100);
         delay(300);
     }
