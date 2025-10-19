@@ -1,0 +1,85 @@
+# =============================
+# .gitignore para proyectos KiCad
+# Mantiene solo archivos fuente útiles
+# =============================
+
+# Archivos de respaldo y temporales
+*.bak
+*.bck
+*.tmp
+*.orig
+*~
+*.save
+
+# Archivos de autosave y recovery
+_autosave*
+*.kicad_prl
+*.kicad_sch-bak
+*.kicad_pcb-bak
+
+# Archivos de cache y configuración local
+fp-info-cache
+sym-lib-table-bak
+fp-lib-table-bak
+*.net
+*.xml
+*.dsn
+*.ses
+*.cmp
+*.pro
+*.cache
+*.kicad_pcb-bak
+*.kicad_sch-bak
+
+# Directorios temporales de KiCad 6/7/8
+__pycache__/
+.kicad_dru/
+.kicad_prl/
+.kicad_3d/
+.kicad_pcb-bak/
+.kicad_sch-bak/
+.kicad_sch-bck/
+.kicad_pcb-bck/
+.kicad_sch-bkp/
+
+# Archivos de simulación (Spice, ngspice, etc.)
+*.raw
+*.log
+*.out
+*.cir
+
+# Archivos generados (no fuente)
+*.pdf
+*.ps
+*.svg
+*.png
+*.jpg
+*.zip
+*.tar.gz
+*.gbr
+*.drl
+*.map
+*.pos
+*.bom
+*.csv
+
+# Fabrication outputs
+/fabrication/
+/gerbers/
+/outputs/
+/plots/
+/exports/
+/build/
+/manufacturing/
+
+# Archivos de proyectos en carpetas locales de usuario
+*.bak~
+*.autosave
+
+# Archivos de sistema o IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
