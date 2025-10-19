@@ -1,10 +1,12 @@
-// app/inc/wall_follower.h
-#ifndef WALL_FOLLOWER_H
-#define WALL_FOLLOWER_H
+#ifndef WALL_FOLLOWER_H_
+#define WALL_FOLLOWER_H_
 
-#include <stdint.h>
+#include "sapi.h"
 
+// Inicialización general del algoritmo
 void wall_follower_init(void);
-void wall_follower_step(void); // ejecutar una iteración del algoritmo
+
+// Lógica principal a ejecutar periódicamente
+void wall_follower_step(void);
 
 #endif

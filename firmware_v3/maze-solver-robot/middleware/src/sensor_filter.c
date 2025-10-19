@@ -1,5 +1,5 @@
 // middleware/src/sensor_filter.c
-#include "sensor_filter.h"
+#include "../inc/sensor_filter.h"
 
 #define WINDOW_SIZE 5
 

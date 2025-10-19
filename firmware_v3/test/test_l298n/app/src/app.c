@@ -1,17 +1,18 @@
 #include "sapi.h"
 
 // --- Motor A (lado izquierdo) ---
-#define IN1   GPIO0
-#define IN2   GPIO1
+#define IN1   GPIO3
+#define IN2   GPIO5
 #define ENA   PWM2   // Canal PWM T_COL0
 
 // --- Motor B (lado derecho) ---
-#define IN3   GPIO2
-#define IN4   GPIO4
-#define ENB   PWM5   // Canal PWM T_COL1
+#define IN3   GPIO4
+#define IN4   GPIO6
+#define ENB   PWM3   // Canal PWM T_FIL2
 
 // --- Velocidad base ---
 #define SPEED             150   // entre 0 y 255
+#define SPEED_B_FORWARD   170
 #define SPEED_B_REVERSE   170   // <-- motor B más rápido al retroceder
 
 void motorA_forward(void) {
@@ -69,14 +70,17 @@ int main(void) {
    printf("Prueba de movimiento - L298N con EDU-CIAA\r\n");
 
    while(TRUE) {
-
-      // --- Adelante ---
+       // --- Adelante ---
       printf("Avanzar\r\n");
       motorA_forward();
       motorB_forward();
       pwmWrite(ENA, SPEED);
-      pwmWrite(ENB, SPEED);
+      pwmWrite(ENB, SPEED_B_FORWARD);
       delay(2000);
+      
+      motorA_stop();
+      motorB_stop();
+      delay(1000);
 
       // --- Atrás ---
       printf("Retroceder\r\n");
@@ -85,6 +89,10 @@ int main(void) {
       pwmWrite(ENA, SPEED);
       pwmWrite(ENB, SPEED_B_REVERSE);  // <-- aumento de velocidad en reversa
       delay(2000);
+      
+      motorA_stop();
+      motorB_stop();
+      delay(1000);
 
       // --- Giro derecha ---
       printf("Giro a la derecha\r\n");
@@ -92,6 +100,10 @@ int main(void) {
       motorB_backward();
       pwmWrite(ENA, SPEED);
       pwmWrite(ENB, SPEED);
+      delay(2000);
+      
+      motorA_stop();
+      motorB_stop();
       delay(1000);
 
       // --- Giro izquierda ---
@@ -100,7 +112,7 @@ int main(void) {
       motorB_forward();
       pwmWrite(ENA, SPEED);
       pwmWrite(ENB, SPEED);
-      delay(1000);
+      delay(2000);
 
       // --- Stop ---
       printf("Detenido\r\n");

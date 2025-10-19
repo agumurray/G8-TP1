@@ -6,48 +6,95 @@
 #include "../../drivers/inc/l298n.h"
 #include "../../drivers/inc/robot_pins.h"
 
-#define TEST_MODE  1   // 0=normal, 1=sensor, 2=motores
+#define TEST_MODE  0   // 0=normal, 1=sensor, 2=motores
+#define SPEED_LEFT 150
+#define SPEED_RIGHT 170
 
 int main(void) {
     boardConfig();
     uartConfig(UART_USB, 115200);
 
+    // Inicialización de sensores y motores (común a todos los modos)
+    hc_sr04_init(SR04_01_ECHO_GPIO, SR04_01_TRIG_GPIO);  // Derecha
+    hc_sr04_init(SR04_02_ECHO_GPIO, SR04_02_TRIG_GPIO);  // Central
+    hc_sr04_init(SR04_03_ECHO_GPIO, SR04_03_TRIG_GPIO);  // Izquierda
+
+    l298n_init();
+
 #if TEST_MODE == 1
-    printf("Test sensor HC-SR04\r\n");
-    hc_sr04_init(SR04_01_ECHO_GPIO, SR04_01_TRIG_GPIO);
+    printf("Test 3 sensores HC-SR04 simultáneo\r\n");
+
     while(TRUE) {
-        uint32_t dist = hc_sr04_distance_cm(SR04_01_ECHO_GPIO, SR04_01_TRIG_GPIO);
-        printf("Distancia: %lu cm\r\n", dist/100);
-        delay(300);
+        uint32_t dist_right = hc_sr04_distance_cm(SR04_01_ECHO_GPIO, SR04_01_TRIG_GPIO) / 100;
+        delay(50); // pequeña separación entre pulsos para evitar interferencias
+
+        uint32_t dist_front = hc_sr04_distance_cm(SR04_02_ECHO_GPIO, SR04_02_TRIG_GPIO) / 100;
+        delay(50);
+
+        uint32_t dist_left  = hc_sr04_distance_cm(SR04_03_ECHO_GPIO, SR04_03_TRIG_GPIO) / 100;
+
+        printf("Front: %lu cm | Right: %lu cm | Left: %lu cm\r\n",
+               dist_front, dist_right, dist_left);
+
+        delay(400);
     }
 
 #elif TEST_MODE == 2
-    printf("Test motores L298N\r\n");
-    l298n_init();
+    printf("Test motores L298N - modo sincronizado\r\n");
+
     while(TRUE) {
         printf("Avanzar\r\n");
-        l298n_forward_left();
-        l298n_forward_right();
-        l298n_set_speed_left(150);
-        l298n_set_speed_right(150);
+        l298n_forward_left();    
+        l298n_forward_right();   
+        l298n_set_speed_left(SPEED_LEFT);
+        l298n_set_speed_right(SPEED_RIGHT);
         delay(2000);
 
-        printf("Giro derecha\r\n");
-        l298n_forward_left();
-        l298n_backward_right();
+        printf("Stop\r\n");
+        l298n_stop_all();       
         delay(1000);
+       
+        printf("Retroceder\r\n");
+        l298n_backward_left();
+        l298n_backward_right();
+        l298n_set_speed_left(SPEED_LEFT);
+        l298n_set_speed_right(SPEED_RIGHT);
+        delay(2000);
+       
+        printf("Stop\r\n");
+        l298n_stop_all();       
+        delay(1000);
+
+        printf("Giro derecha\r\n");
+        l298n_forward_left();    
+        l298n_backward_right(); 
+        l298n_set_speed_left(SPEED_LEFT);
+        l298n_set_speed_right(SPEED_RIGHT);
+        delay(2000);
+       
+        printf("Stop\r\n");
+        l298n_stop_all();
+        delay(1000);
+
+        printf("Giro izquierda\r\n");
+        l298n_backward_left();   
+        l298n_forward_right();   
+        l298n_set_speed_left(SPEED_LEFT);
+        l298n_set_speed_right(SPEED_RIGHT);
+        delay(2000);
 
         printf("Stop\r\n");
         l298n_stop_all();
-        delay(3000);
+        delay(4000);
     }
 
 #else
-    printf("Maze solver - iniciando...\r\n");
+    printf("Maze solver - modo 0 (wall follower)\r\n");
     wall_follower_init();
+
     while(TRUE) {
         wall_follower_step();
-        delay(100);
+        delay(200); // un paso cada 200 ms aprox.
     }
 #endif
 }
