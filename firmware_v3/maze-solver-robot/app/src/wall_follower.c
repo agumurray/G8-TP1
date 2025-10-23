@@ -3,12 +3,12 @@
 #include "../../drivers/inc/l298n.h"
 #include "../../drivers/inc/robot_pins.h"
 
-#define FRONT_OBSTACLE_THRESHOLD 20  // cm: debajo de esto se detiene
-#define SPEED_LEFT  150
-#define SPEED_RIGHT 170
+#define FRONT_OBSTACLE_THRESHOLD 15  // cm: debajo de esto se detiene
+#define SPEED_LEFT  120
+#define SPEED_RIGHT 130
 
 void wall_follower_init(void) {
-    printf("Wall follower inicializado (solo detección de obstáculo frontal)\r\n");
+    printf("Wall follower inicializado (solo detección de obstaculo frontal)\r\n");
     l298n_stop_all();
 }
 
@@ -20,7 +20,7 @@ void wall_follower_step(void) {
 
     // Si hay obstáculo cerca → detenerse
     if (dist_front < FRONT_OBSTACLE_THRESHOLD) {
-        printf("Obstáculo detectado al frente: deteniendo motores\r\n");
+        printf("Obstaculo detectado al frente: deteniendo motores\r\n");
         l298n_stop_all();
     } 
     else {

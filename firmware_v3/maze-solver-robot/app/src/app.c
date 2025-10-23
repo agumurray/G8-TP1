@@ -6,7 +6,7 @@
 #include "../../drivers/inc/l298n.h"
 #include "../../drivers/inc/robot_pins.h"
 
-#define TEST_MODE  0   // 0=normal, 1=sensor, 2=motores
+#define TEST_MODE  0  // 0=normal, 1=sensor, 2=motores
 #define SPEED_LEFT 150
 #define SPEED_RIGHT 170
 
