@@ -3724,6 +3724,16 @@
 	)
 	(wire
 		(pts
+			(xy 144.78 133.35) (xy 149.86 133.35)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "07d2059e-0bda-45bd-a15b-b2da5f32aed2")
+	)
+	(wire
+		(pts
 			(xy 242.57 106.68) (xy 242.57 109.22)
 		)
 		(stroke
@@ -4822,6 +4832,26 @@
 			)
 		)
 	)
+	(global_label "5VR"
+		(shape output)
+		(at 149.86 133.35 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "8eef18ad-8109-490f-9706-7495865b37dd")
+		(property "Intersheetrefs" "${INTERSHEET_REFS}"
+			(at 149.86 133.35 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+	)
 	(global_label "GND"
 		(shape output)
 		(at 204.47 128.27 270)
@@ -5280,7 +5310,7 @@
 			)
 		)
 	)
-	(global_label "5VL"
+	(global_label "5VR"
 		(shape input)
 		(at 100.33 30.48 180)
 		(fields_autoplaced yes)
@@ -5292,7 +5322,7 @@
 		)
 		(uuid "e722ad17-ae02-4882-aa69-fa93e2f2f366")
 		(property "Intersheetrefs" "${INTERSHEET_REFS}"
-			(at 94.0186 30.48 0)
+			(at 93.7767 30.48 0)
 			(effects
 				(font
 					(size 1.27 1.27)
