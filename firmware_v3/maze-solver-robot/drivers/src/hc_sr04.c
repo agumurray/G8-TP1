@@ -51,46 +51,60 @@ static uint32_t medirPulso(uint8_t pin){
    return micros() - t0;
 }
 
-/* --- Versión original (compatibilidad) --- */
+/* --- Versión base de medición --- */
 uint32_t hc_sr04_measure_us(uint8_t echo_pin, uint8_t trig_pin){
-   // Generar pulso de 10 µs
    gpioWrite(trig_pin, OFF);
    delayMicroseconds(2);
    gpioWrite(trig_pin, ON);
    delayMicroseconds(10);
    gpioWrite(trig_pin, OFF);
-
    return medirPulso(echo_pin);
 }
 
-/* --- Wrapper flotante (solo convierte el tipo) --- */
-static float hc_sr04_measure_us_f(uint8_t echo_pin, uint8_t trig_pin){
-   return (float)hc_sr04_measure_us(echo_pin, trig_pin);
+/* --- Conversión genérica: microsegundos → centésimas de cm --- */
+static uint32_t us_to_cm100(uint32_t dur_us){
+   if(dur_us == 0) return 0;
+   // distancia = (dur_us / 58) cm → multiplicamos por 100 para devolver centésimas
+   return (dur_us * 100UL) / 58UL;
 }
 
-/* --- Versión precisa: promedio de lecturas, devuelve cm con decimales --- */
-float hc_sr04_distance_cm_precise(uint8_t echo_pin, uint8_t trig_pin, uint8_t samples){
-   float total = 0.0f;
-   uint8_t valid = 0;
+/* ===========================================================
+   FUNCIONES DE CALIBRACIÓN POR SENSOR
+   =========================================================== */
 
-   for(uint8_t i = 0; i < samples; i++){
-      float dur_us = hc_sr04_measure_us_f(echo_pin, trig_pin);
-      if(dur_us > 0 && dur_us < ECHO_TIMEOUT_US){
-         float dist_cm = (dur_us * SPEED_OF_SOUND_CM_PER_US) / 2.0f;
-         total += dist_cm;
-         valid++;
-      }
-      delayMicroseconds(10000); // 10 ms entre mediciones
-   }
+/* Factores de calibración (ajustables) */
+static float cal_front = 1.00f;  // sensor frontal
+static float cal_left  = 0.75f;  // sensor izquierdo
+static float cal_right = 0.80f;  // sensor derecho
 
-   if(valid == 0) return -1.0f; // fuera de rango o sin lecturas válidas
-   return total / valid;        // promedio filtrado
+/* --- Setters para calibración --- */
+void hc_sr04_set_cal_front(float factor){ cal_front = factor; }
+void hc_sr04_set_cal_left(float factor){ cal_left = factor; }
+void hc_sr04_set_cal_right(float factor){ cal_right = factor; }
+
+/* --- Funciones específicas para cada sensor --- */
+uint32_t hc_sr04_distance_cm_front(void){
+   uint32_t dur = hc_sr04_measure_us(SR04_02_ECHO_GPIO, SR04_02_TRIG_GPIO);
+   uint32_t cm100 = us_to_cm100(dur);
+   return (uint32_t)(cm100 * cal_front);
 }
 
-/* --- Versión original entera, mantiene compatibilidad --- */
+uint32_t hc_sr04_distance_cm_left(void){
+   uint32_t dur = hc_sr04_measure_us(SR04_03_ECHO_GPIO, SR04_03_TRIG_GPIO);
+   uint32_t cm100 = us_to_cm100(dur);
+   return (uint32_t)(cm100 * cal_left);
+}
+
+uint32_t hc_sr04_distance_cm_right(void){
+   uint32_t dur = hc_sr04_measure_us(SR04_01_ECHO_GPIO, SR04_01_TRIG_GPIO);
+   uint32_t cm100 = us_to_cm100(dur);
+   return (uint32_t)(cm100 * cal_right);
+}
+
+/* ===========================================================
+   COMPATIBILIDAD CON API ORIGINAL
+   =========================================================== */
 uint32_t hc_sr04_distance_cm(uint8_t echo_pin, uint8_t trig_pin){
    uint32_t dur_us = hc_sr04_measure_us(echo_pin, trig_pin);
-   if(dur_us == 0) return 0; // fuera de rango
-   uint32_t hundredths = (dur_us * 100UL) / 58UL;
-   return hundredths; // centésimas de cm
+   return us_to_cm100(dur_us);
 }

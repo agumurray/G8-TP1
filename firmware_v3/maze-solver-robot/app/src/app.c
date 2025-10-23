@@ -6,9 +6,9 @@
 #include "../../drivers/inc/l298n.h"
 #include "../../drivers/inc/robot_pins.h"
 
-#define TEST_MODE  0  // 0=normal, 1=sensor, 2=motores
+#define TEST_MODE  1  // 0=normal, 1=sensor, 2=motores
 #define SPEED_LEFT 150
-#define SPEED_RIGHT 170
+#define SPEED_RIGHT 144
 
 int main(void) {
     boardConfig();
@@ -25,13 +25,13 @@ int main(void) {
     printf("Test 3 sensores HC-SR04 simultáneo\r\n");
 
     while(TRUE) {
-        uint32_t dist_right = hc_sr04_distance_cm(SR04_01_ECHO_GPIO, SR04_01_TRIG_GPIO) / 100;
+        uint32_t dist_right = hc_sr04_distance_cm_right() / 100;
         delay(50); // pequeña separación entre pulsos para evitar interferencias
 
-        uint32_t dist_front = hc_sr04_distance_cm(SR04_02_ECHO_GPIO, SR04_02_TRIG_GPIO) / 100;
+        uint32_t dist_front = hc_sr04_distance_cm_front() / 100;
         delay(50);
 
-        uint32_t dist_left  = hc_sr04_distance_cm(SR04_03_ECHO_GPIO, SR04_03_TRIG_GPIO) / 100;
+        uint32_t dist_left  = hc_sr04_distance_cm_left() / 100;
 
         printf("Front: %lu cm | Right: %lu cm | Left: %lu cm\r\n",
                dist_front, dist_right, dist_left);
