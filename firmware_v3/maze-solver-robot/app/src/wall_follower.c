@@ -3,56 +3,127 @@
 #include "../../drivers/inc/l298n.h"
 #include "../../drivers/inc/robot_pins.h"
 
-#define FRONT_OBSTACLE_THRESHOLD   15   // cm: obstáculo frontal
-#define LEFT_WALL_TARGET_DISTANCE  15   // cm: distancia deseada a la pared izquierda
-#define LEFT_WALL_TOLERANCE         5   // cm: margen de error aceptable
+// Umbrales de distancia
+#define FRONT_OBSTACLE_THRESHOLD 7 // cm: obstáculo frontal (como en Arduino)
+#define WALL_MIN_DISTANCE 7        // cm: distancia mínima a la pared
+#define WALL_MAX_DISTANCE 13       // cm: distancia máxima a la pared
+#define WALL_FAR_THRESHOLD 20      // cm: umbral para considerar que no hay pared
 
-#define SPEED_BASE_LEFT   150
-#define SPEED_BASE_RIGHT  144
-#define SPEED_ADJUST       40
+// Velocidades de los motores
+#define SPEED_LEFT 120
+#define SPEED_RIGHT 115
+#define SPEED_TURN_SLOW 110
+#define SPEED_TURN_FAST 160
 
-void wall_follower_init(void) {
-    printf("Wall follower inicializado (seguimiento de pared izquierda + obstáculo frontal)\r\n");
+void wall_follower_init(void){
+    printf("Wall follower inicializado (seguimiento de pared + giros)\r\n");
     l298n_stop_all();
 }
 
-void wall_follower_step(void) {
-    // Leer distancias (convertir a cm)
-    uint32_t dist_front = hc_sr04_distance_cm(SR04_02_ECHO_GPIO, SR04_02_TRIG_GPIO) / 100;
-    uint32_t dist_left  = hc_sr04_distance_cm(SR04_03_ECHO_GPIO, SR04_03_TRIG_GPIO) / 100;
+void stop(void){
+    l298n_stop_all();
+}
 
-    printf("Front: %lu cm | Left: %lu cm\r\n", dist_front, dist_left);
+void avanzar(void){
+    printf("Avanzar\r\n");
+    l298n_forward_left();    
+    l298n_forward_right();   
+    //l298n_set_speed_left(200);
+    //l298n_set_speed_right(200);
+    //delay(50);
+    l298n_set_speed_left(SPEED_LEFT);
+    l298n_set_speed_right(SPEED_RIGHT);
+    delay(50);
+    // delay(2000);
+}
 
-    // 1️⃣ Si hay obstáculo al frente → detenerse
-    if (dist_front < FRONT_OBSTACLE_THRESHOLD) {
-        printf("Obstáculo al frente -> deteniendo motores\r\n");
-        l298n_stop_all();
-        return;
+void derecha(void){
+    printf("Giro derecha\r\n");
+    l298n_forward_left();    
+    l298n_backward_right(); 
+    l298n_set_speed_left(200);
+    l298n_set_speed_right(200);
+    delay(50);
+    l298n_set_speed_left(SPEED_LEFT);
+    l298n_set_speed_right(SPEED_RIGHT);
+    delay(350);
+}
+
+void izquierda(void){
+    printf("Giro izquierda\r\n");
+    l298n_backward_left();   
+    l298n_forward_right();   
+    l298n_set_speed_left(200);
+    l298n_set_speed_right(200);
+    delay(50);
+    l298n_set_speed_left(SPEED_LEFT);
+    l298n_set_speed_right(SPEED_RIGHT);
+    delay(410);
+}
+
+void giro_180(void){
+    printf("Giro 180\r\n");
+    l298n_forward_left();    
+    l298n_backward_right(); 
+    l298n_set_speed_left(200);
+    l298n_set_speed_right(200);
+    delay(50);
+    l298n_set_speed_left(SPEED_LEFT);
+    l298n_set_speed_right(SPEED_RIGHT);
+    delay(800);
+}
+
+void wall_follower_step(void){
+
+    // leer distancias (convertir de centesimas a cm)
+    uint32_t dist_front = hc_sr04_distance_cm_front() / 100;
+    uint32_t dist_left = hc_sr04_distance_cm_left() / 100;
+    uint32_t dist_right = hc_sr04_distance_cm_right() / 100;
+
+    printf("Front: %lu cm | Left: %lu cm | Right: %lu cm\r\n",
+           dist_front, dist_left, dist_right);
+
+    stop();
+
+    // si hay camino libre al frente
+    if (dist_front > FRONT_OBSTACLE_THRESHOLD)
+    {
+        // control de seguimiento de pared derecha
+        if (dist_right >= WALL_MIN_DISTANCE && dist_right <= WALL_MAX_DISTANCE){
+            // Distancia correcta - avanzar recto
+            l298n_forward_left();
+            l298n_forward_right();
+            l298n_set_speed_left(SPEED_LEFT);
+            l298n_set_speed_right(SPEED_RIGHT);
+        }
+        else if (dist_right > WALL_MAX_DISTANCE){
+            // muy lejos de la pared - girar derecha
+            l298n_forward_left();
+            l298n_forward_right();
+            l298n_set_speed_left(SPEED_TURN_FAST);
+            l298n_set_speed_right(SPEED_TURN_SLOW);
+        }
+        else if (dist_right < WALL_MIN_DISTANCE){
+            // muy cerca de la pared - girar izquierda
+            l298n_forward_left();
+            l298n_forward_right();
+            l298n_set_speed_left(SPEED_TURN_SLOW);
+            l298n_set_speed_right(SPEED_TURN_FAST);
+        }
     }
-
-    // 2️⃣ Control de seguimiento de pared izquierda
-    if (dist_left < (LEFT_WALL_TARGET_DISTANCE - LEFT_WALL_TOLERANCE)) {
-        // Demasiado cerca de la pared → girar a la derecha
-        printf("Pared muy cerca -> girando derecha\r\n");
-        l298n_forward_left();
-        l298n_forward_right();
-        l298n_set_speed_left(SPEED_BASE_LEFT + SPEED_ADJUST);
-        l298n_set_speed_right(SPEED_BASE_RIGHT - SPEED_ADJUST);
-    } 
-    else if (dist_left > (LEFT_WALL_TARGET_DISTANCE + LEFT_WALL_TOLERANCE)) {
-        // Demasiado lejos de la pared → girar a la izquierda
-        printf("Pared muy lejos -> girando izquierda\r\n");
-        l298n_forward_left();
-        l298n_forward_right();
-        l298n_set_speed_left(SPEED_BASE_LEFT - SPEED_ADJUST);
-        l298n_set_speed_right(SPEED_BASE_RIGHT + SPEED_ADJUST);
-    } 
-    else {
-        // Distancia correcta → avanzar recto
-        printf("Distancia estable -> avanzando recto\r\n");
-        l298n_forward_left();
-        l298n_forward_right();
-        l298n_set_speed_left(SPEED_BASE_LEFT);
-        l298n_set_speed_right(SPEED_BASE_RIGHT);
+    // si hay obstaculo al frente, decidir hacia donde girar
+    else{
+        // si solo hay pared a la izquierda, girar a la derecha
+        if (dist_left <= WALL_FAR_THRESHOLD && dist_right > WALL_FAR_THRESHOLD){
+            derecha();
+        }
+        // si solo hay pared a la derecha, girar a la izquierda
+        else if (dist_right <= WALL_FAR_THRESHOLD && dist_left > WALL_FAR_THRESHOLD){
+            izquierda();
+        }
+        //si hay paredes a ambos lados, girar 180 grados
+        else if (dist_right <= WALL_FAR_THRESHOLD && dist_left <= WALL_FAR_THRESHOLD){
+            giro_180();
+        }
     }
 }

@@ -6,9 +6,10 @@
 #include "../../drivers/inc/l298n.h"
 #include "../../drivers/inc/robot_pins.h"
 
-#define TEST_MODE  1  // 0=normal, 1=sensor, 2=motores
-#define SPEED_LEFT 150
-#define SPEED_RIGHT 144
+#define TEST_MODE  0  // 0=normal, 1=sensor, 2=motores
+// #define SPEED_LEFT 115
+// #define SPEED_RIGHT 110
+
 
 int main(void) {
     boardConfig();
@@ -20,6 +21,8 @@ int main(void) {
     hc_sr04_init(SR04_03_ECHO_GPIO, SR04_03_TRIG_GPIO);  // Izquierda
 
     l298n_init();
+   
+   delay(1000);
 
 #if TEST_MODE == 1
     printf("Test 3 sensores HC-SR04 simultáneo\r\n");
@@ -39,62 +42,42 @@ int main(void) {
         delay(400);
     }
 
-#elif TEST_MODE == 2
-    printf("Test motores L298N - modo sincronizado\r\n");
+// #elif TEST_MODE == 2
+//     printf("Test motores L298N - modo sincronizado\r\n");
 
-    while(TRUE) {
-        printf("Avanzar\r\n");
-        l298n_forward_left();    
-        l298n_forward_right();   
-        l298n_set_speed_left(SPEED_LEFT);
-        l298n_set_speed_right(SPEED_RIGHT);
-        delay(2000);
-
-        printf("Stop\r\n");
-        l298n_stop_all();       
-        delay(1000);
+//     while(TRUE) {
        
-        printf("Retroceder\r\n");
-        l298n_backward_left();
-        l298n_backward_right();
-        l298n_set_speed_left(SPEED_LEFT);
-        l298n_set_speed_right(SPEED_RIGHT);
-        delay(2000);
-       
-        printf("Stop\r\n");
-        l298n_stop_all();       
-        delay(1000);
+//         avanzar();
+//         delay(2000);
 
-        printf("Giro derecha\r\n");
-        l298n_forward_left();    
-        l298n_backward_right(); 
-        l298n_set_speed_left(SPEED_LEFT);
-        l298n_set_speed_right(SPEED_RIGHT);
-        delay(2000);
-       
-        printf("Stop\r\n");
-        l298n_stop_all();
-        delay(1000);
+//         derecha();
+//         delay(350);
 
-        printf("Giro izquierda\r\n");
-        l298n_backward_left();   
-        l298n_forward_right();   
-        l298n_set_speed_left(SPEED_LEFT);
-        l298n_set_speed_right(SPEED_RIGHT);
-        delay(2000);
+//         avanzar();
+//         delay(2000);
 
-        printf("Stop\r\n");
-        l298n_stop_all();
-        delay(4000);
-    }
+//         izquierda();
+//         delay(410);
+
+//         avanzar();
+//         delay(2000);
+
+//         giro_180();
+//         delay(800);
+
+//         printf("Stop\r\n");
+//         l298n_stop_all();       
+//         delay(1000);
+//     }
 
 #else
     printf("Maze solver - modo 0 (wall follower)\r\n");
     wall_follower_init();
+    delay(1000);
 
     while(TRUE) {
         wall_follower_step();
-        delay(200); // un paso cada 200 ms aprox.
+        // delay(200); // un paso cada 200 ms aprox.
     }
 #endif
 }

@@ -1,8 +1,8 @@
 #include "../inc/l298n.h"
 #include "../inc/robot_pins.h"
 
-void l298n_init(void){
-   // No es necesario boardConfig() acá, ya se hace en app.c
+void l298n_init(void)
+{
    gpioConfig(L298_IN1, GPIO_OUTPUT);
    gpioConfig(L298_IN2, GPIO_OUTPUT);
    gpioConfig(L298_IN3, GPIO_OUTPUT);
@@ -16,48 +16,57 @@ void l298n_init(void){
 }
 
 // --- Motor izquierdo (A) ---
-void l298n_forward_left(void) {
+void l298n_forward_left(void)
+{
    gpioWrite(L298_IN1, ON);
    gpioWrite(L298_IN2, OFF);
 }
 
-void l298n_backward_left(void) {
+void l298n_backward_left(void)
+{
    gpioWrite(L298_IN1, OFF);
    gpioWrite(L298_IN2, ON);
 }
 
-void l298n_stop_left(void) {
+void l298n_stop_left(void)
+{
    gpioWrite(L298_IN1, OFF);
    gpioWrite(L298_IN2, OFF);
 }
 
 // --- Motor derecho (B) ---
-void l298n_forward_right(void) {
+void l298n_forward_right(void)
+{
    gpioWrite(L298_IN3, OFF);
    gpioWrite(L298_IN4, ON);
 }
 
-void l298n_backward_right(void) {
+void l298n_backward_right(void)
+{
    gpioWrite(L298_IN3, ON);
    gpioWrite(L298_IN4, OFF);
 }
 
-void l298n_stop_right(void) {
+void l298n_stop_right(void)
+{
    gpioWrite(L298_IN3, OFF);
    gpioWrite(L298_IN4, OFF);
 }
 
 // --- Control de velocidad ---
-void l298n_set_speed_left(uint8_t speed){
+void l298n_set_speed_left(uint8_t speed)
+{
    pwmWrite(L298_ENA, speed);
 }
 
-void l298n_set_speed_right(uint8_t speed){
+void l298n_set_speed_right(uint8_t speed)
+{
    pwmWrite(L298_ENB, speed);
 }
 
 // --- Stop general ---
-void l298n_stop_all(void){
+void l298n_stop_all(void)
+{
    l298n_stop_left();
    l298n_stop_right();
    l298n_set_speed_left(0);
