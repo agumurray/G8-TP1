@@ -18,9 +18,9 @@
 // Pines L298N
 #define L298_IN1 GPIO3
 #define L298_IN2 GPIO5
-#define L298_ENA PWM2 // T_COL0
+#define L298_ENA PWM3 // T_COL0
 
 #define L298_IN3 GPIO4
 #define L298_IN4 GPIO6
-#define L298_ENB PWM3 // T_FIL2
+#define L298_ENB PWM2 // T_FIL2
 #endif // ROBOT_PINS_H
