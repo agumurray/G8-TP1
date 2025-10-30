@@ -73,7 +73,7 @@ int main(void) {
 #else
     printf("Maze solver - modo 0 (wall follower)\r\n");
     wall_follower_init();
-    delay(1000);
+    delay(5000);
 
     l298n_forward_left();    
     l298n_forward_right();   

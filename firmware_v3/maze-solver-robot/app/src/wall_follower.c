@@ -6,16 +6,16 @@
 
 // Umbrales de distancia
 #define FRONT_OBSTACLE_THRESHOLD 8 // cm: obstáculo frontal
-#define WALL_MIN_DISTANCE 6        // cm: distancia mínima a la pared
+#define WALL_MIN_DISTANCE 7        // cm: distancia mínima a la pared
 #define WALL_MAX_DISTANCE 11      // cm: distancia máxima a la pared
 #define WALL_FAR_THRESHOLD 17      // cm: umbral para considerar que no hay pared a los costados
 
 // Velocidades de los motores
 #define SPEED_LEFT 115
-#define SPEED_RIGHT 120
-#define SPEED_PULSE 200
+#define SPEED_RIGHT 135
+#define SPEED_PULSE 220
 #define SPEED_TURN_SLOW 120
-#define SPEED_TURN_FAST 210
+#define SPEED_TURN_FAST 200
 
 void wall_follower_init(void){
     printf("Wall follower inicializado (seguimiento de pared + giros)\r\n");
@@ -31,7 +31,7 @@ void avanzar(void){
     l298n_forward_right();   
     l298n_set_speed_left(SPEED_PULSE);
     l298n_set_speed_right(SPEED_PULSE);
-    delay(10);
+    delay(20);
     l298n_set_speed_left(SPEED_LEFT);
     l298n_set_speed_right(SPEED_RIGHT);
 }
@@ -44,7 +44,7 @@ void derecha(void){
     delay(10);
     l298n_set_speed_left(SPEED_LEFT);
     l298n_set_speed_right(SPEED_RIGHT);
-    delay(320);
+    delay(305);
 }
 
 void izquierda(void){
@@ -59,14 +59,16 @@ void izquierda(void){
 }
 
 void giro_180(void){
-    l298n_forward_left();    
-    l298n_backward_right(); 
-    l298n_set_speed_left(SPEED_PULSE);
-    l298n_set_speed_right(SPEED_PULSE);
-    delay(10);
-    l298n_set_speed_left(SPEED_LEFT);
-    l298n_set_speed_right(SPEED_RIGHT);
-    delay(600);
+    l298n_backward_left();    
+    l298n_forward_right(); 
+    l298n_set_speed_left(160);
+    l298n_set_speed_right(160);
+  //  delay(20);
+  //  l298n_set_speed_left(SPEED_LEFT);
+  //  l298n_set_speed_right(SPEED_RIGHT);
+    delay(500);
+    stop();
+    delay(50);
 }
 
 void wall_follower_step(void){
@@ -104,7 +106,7 @@ void wall_follower_step(void){
             l298n_forward_left();
             l298n_forward_right();
             l298n_set_speed_left(SPEED_TURN_SLOW);
-            l298n_set_speed_right(SPEED_TURN_FAST);
+            l298n_set_speed_right(SPEED_TURN_FAST + 10);
             delay(40);
         }
         else {
@@ -118,16 +120,22 @@ void wall_follower_step(void){
         if (dist_left <= WALL_FAR_THRESHOLD && dist_right > WALL_FAR_THRESHOLD){
             gpioWrite(LED1, ON);
             derecha();
+            avanzar();
+            delay(40);
         }
         // si solo hay pared a la derecha, girar a la izquierda
         else if (dist_right <= WALL_FAR_THRESHOLD && dist_left > WALL_FAR_THRESHOLD){
             gpioWrite(LED2, ON);
             izquierda();
+            avanzar();
+            delay(40);
         }
         // si hay paredes a ambos lados, girar 180 grados
         else if (dist_right <= WALL_FAR_THRESHOLD && dist_left <= WALL_FAR_THRESHOLD){
             gpioWrite(LED3, ON);
             giro_180();
+           avanzar();
+           delay(50);
         }
         else{
             avanzar();
