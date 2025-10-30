@@ -94,7 +94,7 @@ void wall_follower_step(void){
             delay(40);
         }
         // muy cerca de la pared iquierda - girar derecha
-        else if (dist_right > WALL_MAX_DISTANCE || dist_left <= WALL_MIN_DISTANCE){
+        else if (dist_right > WALL_MAX_DISTANCE){
             l298n_forward_left();
             l298n_forward_right();
             l298n_set_speed_left(SPEED_TURN_FAST);
@@ -102,7 +102,7 @@ void wall_follower_step(void){
             delay(40);
         }
         // muy cerca de la pared derecha - girar izquierda
-        else if (dist_right <= WALL_MIN_DISTANCE || dist_left > WALL_MAX_DISTANCE){
+        else if (dist_right <= WALL_MIN_DISTANCE){
             l298n_forward_left();
             l298n_forward_right();
             l298n_set_speed_left(SPEED_TURN_SLOW);
