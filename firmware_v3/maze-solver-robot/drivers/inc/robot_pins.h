@@ -8,8 +8,8 @@
 #define SR04_01_ECHO_GPIO   GPIO2
 
 // Sensor central
-#define SR04_02_TRIG_GPIO   GPIO7
-#define SR04_02_ECHO_GPIO   GPIO5
+#define SR04_02_TRIG_GPIO   GPIO8
+#define SR04_02_ECHO_GPIO   GPIO7
 
 // Sensor izquierda
 #define SR04_03_TRIG_GPIO   T_COL2
@@ -17,7 +17,7 @@
 
 // Pines L298N
 #define L298_IN1 GPIO3
-#define L298_IN2 GPIO8
+#define L298_IN2 GPIO5
 #define L298_ENA PWM3 // T_COL0
 
 #define L298_IN3 GPIO4
