@@ -12,10 +12,10 @@
 
 // Velocidades de los motores
 #define SPEED_LEFT 115
-#define SPEED_RIGHT 135
+#define SPEED_RIGHT 115
 #define SPEED_PULSE 220
 #define SPEED_TURN_SLOW 120
-#define SPEED_TURN_FAST 200
+#define SPEED_TURN_FAST 170
 
 void wall_follower_init(void){
     printf("Wall follower inicializado (seguimiento de pared + giros)\r\n");
@@ -48,8 +48,8 @@ void derecha(void){
 }
 
 void izquierda(void){
-    l298n_backward_left();   
-    l298n_forward_right();   
+   l298n_backward_left();   
+   l298n_forward_right();   
     l298n_set_speed_left(SPEED_PULSE);
     l298n_set_speed_right(SPEED_PULSE);
     delay(10);
@@ -63,9 +63,9 @@ void giro_180(void){
     l298n_forward_right(); 
     l298n_set_speed_left(160);
     l298n_set_speed_right(160);
-  //  delay(20);
-  //  l298n_set_speed_left(SPEED_LEFT);
-  //  l298n_set_speed_right(SPEED_RIGHT);
+    delay(20);
+    l298n_set_speed_left(SPEED_LEFT);
+    l298n_set_speed_right(SPEED_RIGHT);
     delay(500);
     stop();
     delay(50);
@@ -73,7 +73,7 @@ void giro_180(void){
 
 void wall_follower_step(void){
    stop();
-   delay(25);
+   delay(15);
 
     // leer distancias (convertir de centesimas a cm)
     uint32_t dist_front = hc_sr04_distance_cm_front() / 100;
@@ -99,7 +99,7 @@ void wall_follower_step(void){
             l298n_forward_right();
             l298n_set_speed_left(SPEED_TURN_FAST);
             l298n_set_speed_right(SPEED_TURN_SLOW);
-            delay(40);
+            delay(30);
         }
         // muy cerca de la pared derecha - girar izquierda
         else if (dist_right <= WALL_MIN_DISTANCE){
@@ -107,7 +107,7 @@ void wall_follower_step(void){
             l298n_forward_right();
             l298n_set_speed_left(SPEED_TURN_SLOW);
             l298n_set_speed_right(SPEED_TURN_FAST + 10);
-            delay(40);
+            delay(30);
         }
         else {
            avanzar();

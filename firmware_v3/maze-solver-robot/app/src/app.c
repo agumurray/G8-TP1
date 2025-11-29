@@ -82,6 +82,7 @@ int main(void) {
 
     while(TRUE) {
         wall_follower_step();
+        delay(40);
     }
 #endif
 }

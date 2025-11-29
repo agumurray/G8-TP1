@@ -16,13 +16,13 @@ void l298n_init(void){
 
 // --- Motor izquierdo (A) ---
 void l298n_forward_left(void){
-   gpioWrite(L298_IN1, ON);
-   gpioWrite(L298_IN2, OFF);
+   gpioWrite(L298_IN1, OFF);
+   gpioWrite(L298_IN2, ON);
 }
 
 void l298n_backward_left(void){
-   gpioWrite(L298_IN1, OFF);
-   gpioWrite(L298_IN2, ON);
+   gpioWrite(L298_IN1, ON);
+   gpioWrite(L298_IN2, OFF);
 }
 
 void l298n_stop_left(void){
