@@ -10,6 +10,12 @@
 // #define SPEED_LEFT 115
 // #define SPEED_RIGHT 110
 
+#define SPEED_LEFT 115
+#define SPEED_RIGHT 135
+#define SPEED_PULSE 220
+#define SPEED_TURN_SLOW 120
+#define SPEED_TURN_FAST 200
+
 
 int main(void) {
     boardConfig();
@@ -73,16 +79,10 @@ int main(void) {
 #else
     printf("Maze solver - modo 0 (wall follower)\r\n");
     wall_follower_init();
-    delay(5000);
-
-    l298n_forward_left();    
-    l298n_forward_right();   
-    l298n_set_speed_left(200);
-    l298n_set_speed_right(200);
+    //delay(5000);
 
     while(TRUE) {
-        wall_follower_step();
-        delay(40);
+      wall_follower_step();
     }
 #endif
 }
