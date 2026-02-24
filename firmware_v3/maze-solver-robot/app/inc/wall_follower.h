@@ -9,4 +9,6 @@ void wall_follower_init(void);
 // Lógica principal a ejecutar periódicamente
 void wall_follower_step(void);
 
+void wall_follower_try(void);
+
 #endif

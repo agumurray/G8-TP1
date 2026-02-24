@@ -73,9 +73,10 @@ static uint32_t us_to_cm100(uint32_t dur_us){
    =========================================================== */
 
 /* Factores de calibración (ajustables) */
-static float cal_front = 1.00f;  // sensor frontal
-static float cal_left  = 0.75f;  // sensor izquierdo
-static float cal_right = 0.80f;  // sensor derecho
+static float cal_front = 1.00f;  
+static float cal_right  = 0.90f;  
+static float cal_left = 0.80f;  
+//acordate que aca invertiste right x front
 
 /* --- Setters para calibración --- */
 void hc_sr04_set_cal_front(float factor){ cal_front = factor; }
